@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tic Tac Toe</title>
+
+    <style>
+        body {
+            text-align: center;
+            display: grid;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            margin: 0;
+            gap: 50px;
+            align-items: center;
+            background-color: #FFEA00;
+        }
+
+        /* Add your custom styling here */
+      
+        .board {
+            display: grid;
+            position: sticky;
+            grid-template-columns: repeat(3, 0fr);
+            gap: 0px;
+            align-items: center;
+                    }
+        .cell {
+            text-align: center;
+            width: 100px;
+            height: 100px;
+            border: 1px solid #03045e;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 75px;
+            cursor: pointer;
+            background-color: #00b4d8;
+            
+        }
+        .win {
+            background-color: #76ff7b; /* Highlight winning cells */
+        }
+        .centered-header {
+                      text-align: center;
+        }
+        #status {
+              width: 200px; /* Set an appropriate width */
+              margin: 0; /* Center horizontally */
+              font: bold;
+              font-size: 25px;
+              position: sticky;
+              display: grid;
+              align-items: center;
+              justify-content: center;
+          
+        }
+        #winner {
+              width: 200px; /* Set an appropriate width */
+              margin: 0; /* Center horizontally */
+              font: bold;
+              font-size: 25px;
+              position: sticky;
+              display: grid;
+              align-items: center;
+              justify-content: center;
+              font-color: red;
+           
+        }
+  
+
+        /* Optional styling for the button */
+        .button {
+                      text-align: center;
+        }
+               
+      </style>
+</head>
+<body>
+    
+    <h1>Tic Tac Toe</h1>
+    <p style="color: hsl(0, 100%, 50%);">Developed by Joes Creations(Joe George)</p>
+    <div class="board" id="board">
+        <div class="cell" data-cell-index="0"></div>
+        <div class="cell" data-cell-index="1"></div>
+        <div class="cell" data-cell-index="2"></div>
+        <div class="cell" data-cell-index="3"></div>
+        <div class="cell" data-cell-index="4"></div>
+        <div class="cell" data-cell-index="5"></div>
+        <div class="cell" data-cell-index="6"></div>
+        <div class="cell" data-cell-index="7"></div>
+        <div class="cell" data-cell-index="8"></div>
+    </div>
+    <div id="status">Player X's turn</div>
+    <button onclick="resetBoard()">Reset Board</button>
+    <div id="winner"></div>
+
+    <script>
+        const cells = document.querySelectorAll('.cell');
+        let currentPlayer = 'X';
+        let gameEnded = false;
+
+        cells.forEach(cell => {
+            cell.addEventListener('click', handleCellClick);
+        });
+
+        function handleCellClick(event) {
+            if (gameEnded) return;
+            const cell = event.target;
+            const cellIndex = cell.dataset.cellIndex;
+
+            if (!cell.textContent) {
+                cell.textContent = currentPlayer;
+                currentPlayer = currentPlayer === 'X' ? 'O' : 'X';
+                checkWin();
+                updateStatus();
+            }
+        }
+
+        function checkWin() {
+            const winCombinations = [
+                [0, 1, 2], [3, 4, 5], [6, 7, 8], // Rows
+                [0, 3, 6], [1, 4, 7], [2, 5, 8], // Columns
+                [0, 4, 8], [2, 4, 6] // Diagonals
+            ];
+
+            for (const combo of winCombinations) {
+                const [a, b, c] = combo;
+                if (cells[a].textContent && cells[a].textContent === cells[b].textContent && cells[a].textContent === cells[c].textContent) {
+                    cells[a].classList.add('win'); // Highlight winning cells
+                    cells[b].classList.add('win');
+                    cells[c].classList.add('win');
+                    document.getElementById('status').textContent = `Player ${cells[a].textContent} wins!`;
+                    document.getElementById('winner').textContent = `Player ${cells[a].textContent} wins!`;
+                    gameEnded = true;
+                    break;
+                }
+            }
+
+            if (!gameEnded && Array.from(cells).every(cell => cell.textContent)) {
+                document.getElementById('status').textContent = "It's a draw!";
+                document.getElementById('winner').textContent = "It's a draw!";
+                gameEnded = true;
+            }
+        }
+
+        function updateStatus() {
+            document.getElementById('status').textContent = gameEnded ? '' : `Player ${currentPlayer}'s turn`;
+        }
+
+        function resetBoard() {
+            cells.forEach(cell => {
+                cell.textContent = '';
+                cell.classList.remove('win');
+            });
+            updateStatus();
+            document.getElementById('winner').textContent = '';
+            currentPlayer = 'X';
+            gameEnded = false;
+        }
+    </script>
+</body>
+</html>
